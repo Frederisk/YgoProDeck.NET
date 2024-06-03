@@ -1,12 +1,26 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Reflection;
+
+using YgoProDeck.Lib;
 
 namespace YgoProDeck.Cli;
 
 public class Program {
     public static void Main(String[] args) {
         Console.WriteLine("Hello, World!");
+
+        Parameters parameters = new() {
+            //Name = ["Dark Magician","Maxx \"C\""],
+            //ID = [123123,1231,123,3],
+            ////KonamiID = 017,
+            ////ATK = (1000, ValueCompare.GreaterThan),
+            ////ATK = 2500,
+            ////D = 2100,
+            ////Level = 7,
+            //Type = [CardType.NormalMonster],
+            //Race = [Race.Plant, Race.QuickPlay],
+            //Language = Language.English,
+        };
+        Console.WriteLine(CardQuery.CreateQueryURI(parameters));
         //Console.WriteLine(GetPropertyDescription<Lib.Parameters>(nameof(Lib.Parameters.Name)));
         //Console.WriteLine(GetEnumDescription(Lib.ValueCompare.GreaterThan));
     }
