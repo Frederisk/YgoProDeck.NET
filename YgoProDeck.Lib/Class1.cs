@@ -1,16 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Reflection;
+using System.Web;
 
 namespace YgoProDeck.Lib;
 
 public class CardRequester {
 }
 
-public class CardQuery {
+public static class CardQuery {
     public static readonly String BaseUrl = "https://db.ygoprodeck.com/api/v7/cardinfo.php";
 
-    //public String
+    public static String CreateQueryURI(Parameters pars) {
+        UriBuilder uri = new UriBuilder(BaseUrl);
+        var query = HttpUtility.ParseQueryString(uri.Query);
+        if(pars.Name is not null) query.Add(GetParametersPropertyDescription(nameof(pars.Name)), pars.Name);
+
+
+
+        uri.Query = query.ToString();
+        return uri.ToString();
+    }
+
+    private static String GetParametersPropertyDescription(String propertyName) => GetPropertyDescription<Parameters>(propertyName);
+
+    private static String GetPropertyDescription<T>(String propertyName) {
+        ArgumentNullException.ThrowIfNull(propertyName);
+        PropertyInfo property = typeof(T).GetProperty(propertyName) ?? throw new NullReferenceException($"Property {propertyName} not found in {typeof(T).Name}");
+        DescriptionAttribute attribute = Attribute.GetCustomAttribute(property, typeof(DescriptionAttribute)) as DescriptionAttribute ?? throw new NullReferenceException($"{nameof(DescriptionAttribute)} not found in {propertyName}");
+        return attribute!.Description;
+    }
+
+    private static String GetEnumDescription<T>(T value) where T : Enum {
+        ArgumentNullException.ThrowIfNull(value);
+        String name = Enum.GetName(typeof(T), value) ?? throw new NullReferenceException($"Name not found for {value}");
+        FieldInfo field = typeof(T).GetField(name) ?? throw new NullReferenceException($"Field {name} not found in {typeof(T).Name}");
+        DescriptionAttribute attribute = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute ?? throw new NullReferenceException($"{nameof(DescriptionAttribute)} not found in {name}");
+        return attribute!.Description;
+    }
 }
 
 public record class Parameters {
@@ -24,19 +53,20 @@ public record class Parameters {
     public UInt64? KonamiID { get; init; }
     [Description("type")]
     public Type? Type { get; init; }
-    [Description("atk")]
-    public UInt64? ATK { get; init; }
-    public ValueCompare? AtkCompare { get; init; }
+
+    //[PropertyDescription("atk", ATKToString)]
+    public (UInt64, ValueCompare)? ATK { get; init; }
+
     [Description("def")]
-    public UInt64? DEF { get; init; }
-    public ValueCompare? DefCompare { get; init; }
+    public (UInt64, ValueCompare)? DEF { get; init; }
+
     [Description("level")]
-    public UInt64? Level { get; init; }
-    public ValueCompare? LevelCompare { get; init; }
+    public (UInt64, ValueCompare)? Level { get; init; }
+
     [Description("race")]
     public List<Race>? Race { get; init; }
     [Description("attribute")]
-    public List<Attribute>? Attribute { get; init; }
+    public List<MonsterAttribute>? Attribute { get; init; }
     [Description("link")]
     public UInt64? Link { get; init; }
     [Description("linkmarker")]
@@ -87,7 +117,7 @@ public enum ValueCompare {
     GreaterThanOrEqual,
 }
 
-public enum Attribute {
+public enum MonsterAttribute {
     [Description("Dark")]
     Dark,
     [Description("Earth")]
