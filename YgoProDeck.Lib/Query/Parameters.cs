@@ -83,6 +83,8 @@ public record class Parameters {
     [QueryConverter("language", typeof(LanguageConverter))]
     public Language Language { get; init; } // Default: English
 
+    // tcgplayer_data 
+
     #region Converter
 
     protected class CardNameListConverter : QueryConverter {
