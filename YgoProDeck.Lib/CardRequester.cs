@@ -1,29 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text.Json;
-using System.Threading.Tasks;
-
 
 namespace YgoProDeck.Lib;
 
 public class CardRequester {
-    public String Uri { get; }
+    public Uri Uri { get; }
 
-    public CardRequester(String uri) {
+    public CardRequester(Uri uri) {
         Uri = uri;
     }
 
-    public async Task<CardResponse> GetCardAsync() {
-        using HttpClient client = new();
-        using HttpResponseMessage response = await client.GetAsync(Uri);
+    //public async Task<CardResponse> GetCardAsync(CancellationToken cancellationToken) {
+    //    using HttpClient client = new();
+    //    using HttpResponseMessage response = await client.GetAsync(Uri, cancellationToken);
 
-        if (!response.IsSuccessStatusCode) {
-            throw new HttpRequestException($"Failed to get card data. Status code: {response.StatusCode}");
-        }
+    //    if (!response.IsSuccessStatusCode) {
+    //        throw new HttpRequestException($"Failed to get card data. Status code: {response.StatusCode}");
+    //    }
 
-        String content = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<CardResponse>(content);
-    }
-
+    //    using Stream content = await response.Content.ReadAsStreamAsync(cancellationToken);
+    //    return await JsonSerializer.DeserializeAsync<CardResponse>(content, cancellationToken: cancellationToken);
+    //}
 }

@@ -3,36 +3,36 @@ using System.Collections.Specialized;
 using System.Reflection;
 using System.Web;
 
-namespace YgoProDeck.Lib;
+namespace YgoProDeck.Lib.Query;
 
 public static class CardQuery {
     public static readonly String BaseUrl = "https://db.ygoprodeck.com/api/v7/cardinfo.php";
 
-    public static String? CreateQueryURI(Parameters pars) {
+    public static Uri? CreateQueryURI(Parameters pars) {
         UriBuilder uri = new(BaseUrl);
         NameValueCollection query = HttpUtility.ParseQueryString(uri.Query);
 
         foreach (PropertyInfo property in pars.GetType().GetProperties()) {
-            var queryConverterAttributes = property.GetCustomAttribute<QueryConverterAttribute>();
-            if (queryConverterAttributes is null) {
+            QueryConverterAttribute? attribute = property.GetCustomAttribute<QueryConverterAttribute>();
+            if (attribute is null) {
                 continue;
             }
 
-            var propertyValue = property.GetValue(pars);
+            Object? propertyValue = property.GetValue(pars);
             if (propertyValue is null) {
                 continue;
             }
 
-            var realValue = queryConverterAttributes.Converter.WriteValue(propertyValue);
+            String? realValue = attribute.Converter.WriteValue(propertyValue);
             if (realValue is null) {
                 continue;
             }
 
-            query.Add(queryConverterAttributes.Name, realValue);
+            query.Add(attribute.Name, realValue);
             //query[queryConverterAttributes.Name] = queryConverterAttributes.Converter.WriteValue(propertyValue);
         }
         uri.Query = query.ToString();
 
-        return uri.ToString();
+        return uri.Uri;
     }
 }

@@ -5,7 +5,7 @@ using System.Reflection;
 
 using YgoProDeck.Lib.EnumValue;
 
-namespace YgoProDeck.Lib;
+namespace YgoProDeck.Lib.Query;
 
 public record class Parameters {
     [QueryConverter("name", typeof(CardNameListConverter))]
@@ -161,7 +161,7 @@ public record class Parameters {
             if (value is not Language language) {
                 return null;
             }
-            var description = GetEnumDescription(language);
+            String description = GetEnumDescription(language);
             return String.IsNullOrEmpty(description) ? null : description;
         }
     }

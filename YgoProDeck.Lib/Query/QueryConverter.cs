@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace YgoProDeck.Lib;
+namespace YgoProDeck.Lib.Query;
 
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
 public class QueryConverterAttribute : Attribute {
