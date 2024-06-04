@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel;
+using System.Text.Json.Serialization;
 
 namespace YgoProDeck.Lib.EnumValue;
 
-//[Flags]
+[JsonConverter(typeof(EnumDescriptionJsonConverter<LinkMarker>))]
 public enum LinkMarker {
 
     [Description("Top")]

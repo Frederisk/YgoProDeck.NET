@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel;
+using System.Text.Json.Serialization;
 
 namespace YgoProDeck.Lib.EnumValue;
 
+[JsonConverter(typeof(EnumDescriptionJsonConverter<CardType>))]
 public enum CardType {
 
     // Main Deck Types

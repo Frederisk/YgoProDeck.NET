@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel;
+using System.Text.Json.Serialization;
 
 namespace YgoProDeck.Lib.EnumValue;
 
+//[JsonConverter(typeof(EnumDescriptionJsonConverter<Banlist>))]
 public enum Banlist {
 
     [Description("TCG")]

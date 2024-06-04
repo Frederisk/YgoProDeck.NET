@@ -1,24 +1,37 @@
 ﻿using System.ComponentModel;
+using System.Text.Json.Serialization;
 
 namespace YgoProDeck.Lib.EnumValue;
 
+[JsonConverter(typeof(EnumDescriptionJsonConverter<Format>))]
 public enum Format {
 
-    [Description("tcg")]
+    [Description("TCG")]
     TCG,
 
-    [Description("ocg")]
+    [Description("OCG")]
     OCG,
 
-    [Description("ocg goat")]
+    [Description("OCG GOAT")]
     OCGGoat,
 
-    [Description("speed duel")]
+    [Description("Speed Duel")]
     SpeedDuel,
 
-    [Description("rush duel")]
+    [Description("Rush Duel")]
     RushDuel,
 
-    [Description("duel links")]
+    [Description("Duel Links")]
     DuelLinks,
+
+    // Undocumented
+
+    [Description("GOAT")]
+    Goat,
+
+    [Description("Common Charity")]
+    CommonCharity,
+
+    [Description("Edison")]
+    Edison,
 }

@@ -7,7 +7,7 @@ using YgoProDeck.Lib.EnumValue;
 
 namespace YgoProDeck.Lib.Query;
 
-public record class Parameters {
+public partial record Parameters {
     [QueryConverter("name", typeof(CardNameListConverter))]
     public IReadOnlyList<String>? Name { get; init; }
 
@@ -51,7 +51,7 @@ public record class Parameters {
     public String? CardSet { get; init; }
 
     [QueryConverter("archetype")]
-    public String? ArcheType { get; init; }
+    public String? Archetype { get; init; }
 
     [QueryConverter("banlist", typeof(EnumDescriptionConverter))]
     public Banlist? Banlist { get; init; }
@@ -83,14 +83,19 @@ public record class Parameters {
     [QueryConverter("language", typeof(LanguageConverter))]
     public Language Language { get; init; } // Default: English
 
-    // tcgplayer_data 
+    [QueryConverter("tcgplayer_data")]
+    public Boolean? TCGPlayerData { get; init; } // Note TCGPlayerData will always be responded if this property is not null
+
+    [QueryConverter("num")]
+    public UInt64? Number { get; init; }
 
     #region Converter
 
     protected class CardNameListConverter : QueryConverter {
         public override String? WriteValue(Object? value) {
+            if (value is null) { return null; }
             if (value is not IReadOnlyList<String> names) {
-                return null;
+                throw new ArgumentException($"Invalid type {value.GetType().Name}, expected {typeof(IReadOnlyList<String>).Name}");
             }
             return String.Join("|", names);
         }
@@ -107,16 +112,18 @@ public record class Parameters {
 
     protected class EightNumberListConverter : QueryConverter {
         public override String? WriteValue(Object? value) {
+            if (value is null) { return null; }
             if (value is not IReadOnlyList<UInt64> numbers) {
-                return null;
+                throw new ArgumentException($"Invalid type {value.GetType().Name}, expected {typeof(IReadOnlyList<UInt64>).Name}");
             }
             return String.Join(",", numbers.ConvertAll(item => item.ToString("D8")));
         }
     }
     protected class NumberListConverter : QueryConverter {
         public override String? WriteValue(Object? value) {
+            if (value is null) { return null; }
             if (value is not IReadOnlyList<UInt64> numbers) {
-                return null;
+                throw new ArgumentException($"Invalid type {value.GetType().Name}, expected {typeof(IReadOnlyList<UInt64>).Name}");
             }
             return String.Join(",", numbers);
         }
@@ -124,8 +131,9 @@ public record class Parameters {
 
     protected class EnumDescriptionConverter : QueryConverter {
         public override String? WriteValue(Object? value) {
+            if (value is null) { return null; }
             if (value is not Enum enumValue) {
-                return null;
+                throw new ArgumentException($"Invalid type {value.GetType().Name}, expected {typeof(Enum).Name}");
             }
             return GetEnumDescription(enumValue);
         }
@@ -133,8 +141,9 @@ public record class Parameters {
 
     protected class EnumListDescriptionConverter<T> : QueryConverter where T : Enum {
         public override String? WriteValue(Object? value) {
+            if (value is null) { return null; }
             if (value is not IReadOnlyList<T> enums) {
-                return null;
+                throw new ArgumentException($"Invalid type {value.GetType().Name}, expected {typeof(IReadOnlyList<T>).Name}");
             }
             return String.Join(",", enums.ConvertAll(item => GetEnumDescription(item)));
         }
@@ -142,8 +151,9 @@ public record class Parameters {
 
     protected class ComparableNumberConverter : QueryConverter {
         public override String? WriteValue(Object? value) {
+            if (value is null) { return null; }
             if (value is not ValueTuple<UInt64, ValueCompare>(UInt64 Number, ValueCompare Compare)) {
-                return null;
+                throw new ArgumentException($"Invalid type {value.GetType().Name}, expected {typeof(ValueTuple<UInt64, ValueCompare>).Name}");
             }
             return $"{GetEnumDescription(Compare)}{Number}";
         }
@@ -151,8 +161,9 @@ public record class Parameters {
 
     protected class YesOrNullConverter : QueryConverter {
         public override String? WriteValue(Object? value) {
+            if (value is null) { return null; }
             if (value is not Boolean boolean) {
-                return null;
+                throw new ArgumentException($"Invalid type {value.GetType().Name}, expected {typeof(Boolean).Name}");
             }
             return boolean ? "yes" : null;
         }
@@ -160,8 +171,9 @@ public record class Parameters {
 
     protected class LanguageConverter : QueryConverter {
         public override String? WriteValue(Object? value) {
+            if (value is null) { return null; }
             if (value is not Language language) {
-                return null;
+                throw new ArgumentException($"Invalid type {value.GetType().Name}, expected {typeof(Language).Name}");
             }
             String description = GetEnumDescription(language);
             return String.IsNullOrEmpty(description) ? null : description;
