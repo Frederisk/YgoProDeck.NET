@@ -3,7 +3,8 @@ using System.ComponentModel;
 using System.Reflection;
 
 namespace YgoProDeck.Lib.Helper;
-internal static class AttributeHelper {
+
+public static class AttributeHelper {
 
     public static String GetEnumDescription<T>(T value) where T : Enum {
         //ArgumentNullException.ThrowIfNull(value);

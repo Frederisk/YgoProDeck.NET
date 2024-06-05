@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.Text.Json.Serialization;
+using System.ComponentModel;
 
 namespace YgoProDeck.Lib.EnumValue;
 
@@ -20,4 +19,12 @@ public enum Language {
 
     [Description("pt")]
     Portuguese,
+
+    // Undocumented
+
+    [Description("ko")]
+    Korean,
+
+    [Description("ja")]
+    Japanese,
 }

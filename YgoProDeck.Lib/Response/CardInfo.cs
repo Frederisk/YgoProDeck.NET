@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using YgoProDeck.Lib.EnumValue;
@@ -12,14 +11,10 @@ public partial record CardInfo {
     [JsonPropertyName("data")]
     public IReadOnlyList<CardData> Data { get; set; }
 
-    //[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    //[JsonPropertyName("meta")]
-    //public Meta Meta { get; init; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonPropertyName("meta")]
+    public Meta? Meta { get; init; }
 }
-
-//public partial record Meta {
-//    public UInt64 
-//}
 
 public partial record CardData {
     // All Cards
@@ -42,11 +37,11 @@ public partial record CardData {
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("pend_desc")]
-    public String PendDesc { get; set; }
+    public String? PendDesc { get; set; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("monster_desc")]
-    public String MonsterDesc { get; set; }
+    public String? MonsterDesc { get; set; }
 
     [JsonPropertyName("ygoprodeck_url")]
     public Uri YgoProDeckUrl { get; set; }
@@ -74,7 +69,7 @@ public partial record CardData {
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("card_sets")]
-    public IReadOnlyList<CardSet> CardSets { get; set; }
+    public IReadOnlyList<CardSet>? CardSets { get; set; }
 
     [JsonPropertyName("card_images")]
     public IReadOnlyList<CardImage> CardImages { get; set; }
@@ -84,7 +79,7 @@ public partial record CardData {
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("archetype")]
-    public String Archetype { get; set; }
+    public String? Archetype { get; set; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("linkval")]
@@ -93,7 +88,7 @@ public partial record CardData {
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("linkmarkers")]
     //[JsonConverter(typeof(EnumDescriptionJsonConverter<LinkMarker>))]
-    public IReadOnlyList<LinkMarker> LinkMarkers { get; set; }
+    public IReadOnlyList<LinkMarker>? LinkMarkers { get; set; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("scale")]
@@ -101,11 +96,11 @@ public partial record CardData {
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("misc_info")]
-    public IReadOnlyList<MiscInfo> MiscInfo { get; set; }
+    public IReadOnlyList<MiscInfo>? MiscInfo { get; set; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("banlist_info")]
-    public BanlistInfo BanlistInfo { get; set; }
+    public BanlistInfo? BanlistInfo { get; set; }
 }
 
 public partial record CardImage {
@@ -124,23 +119,23 @@ public partial record CardImage {
 
 public partial record CardPrice {
     [JsonPropertyName("cardmarket_price")]
-    [JsonConverter(typeof(DoubleJsonConverter))]
+    [JsonConverter(typeof(DoubleStringJsonConverter))]
     public Double CardmarketPrice { get; set; }
 
     [JsonPropertyName("tcgplayer_price")]
-    [JsonConverter(typeof(DoubleJsonConverter))]
+    [JsonConverter(typeof(DoubleStringJsonConverter))]
     public Double TcgplayerPrice { get; set; }
 
     [JsonPropertyName("ebay_price")]
-    [JsonConverter(typeof(DoubleJsonConverter))]
+    [JsonConverter(typeof(DoubleStringJsonConverter))]
     public Double EbayPrice { get; set; }
 
     [JsonPropertyName("amazon_price")]
-    [JsonConverter(typeof(DoubleJsonConverter))]
+    [JsonConverter(typeof(DoubleStringJsonConverter))]
     public Double AmazonPrice { get; set; }
 
     [JsonPropertyName("coolstuffinc_price")]
-    [JsonConverter(typeof(DoubleJsonConverter))]
+    [JsonConverter(typeof(DoubleStringJsonConverter))]
     public Double CoolstuffincPrice { get; set; }
 }
 
@@ -158,18 +153,18 @@ public partial record CardSet {
     public String SetRarityCode { get; set; } // TODO: Is this a enum?
 
     [JsonPropertyName("set_price")]
-    [JsonConverter(typeof(DoubleJsonConverter))]
+    [JsonConverter(typeof(DoubleStringJsonConverter))]
     public Double SetPrice { get; set; }
 
     // TCG Player
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("set_edition")]
-    public String SetEdition { get; set; } // TODO: Is this a enum?
+    public String? SetEdition { get; set; } // TODO: Is this a enum?
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("set_url")]
-    public Uri SetUrl { get; set; }
+    public Uri? SetUrl { get; set; }
 }
 
 public partial record MiscInfo {
@@ -216,25 +211,27 @@ public partial record BanlistInfo {
     public BanStatus BanGoat { get; set; }
 }
 
-public class DoubleJsonConverter : JsonConverter<Double> {
+public partial record Meta {
+    [JsonPropertyName("current_rows")]
+    public UInt64 CurrentRows { get; set; }
 
-    public override Double Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
-        //return reader.GetDouble();
-        return Double.Parse(reader.GetString() ?? throw new NullReferenceException());
-    }
+    [JsonPropertyName("total_rows")]
+    public UInt64 TotalRows { get; set; }
 
-    public override void Write(Utf8JsonWriter writer, Double value, JsonSerializerOptions options) {
-        writer.WriteNumberValue(value);
-    }
-}
+    [JsonPropertyName("rows_remaining")]
+    public UInt64 RowsRemaining { get; set; }
 
-public class NumberBooleanJsonConverter : JsonConverter<Boolean> {
+    [JsonPropertyName("total_pages")]
+    public UInt64 TotalPages { get; set; }
 
-    public override Boolean Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
-        return reader.GetInt32() == 1;
-    }
+    [JsonPropertyName("pages_remaining")]
+    public UInt64 PagesRemaining { get; set; }
 
-    public override void Write(Utf8JsonWriter writer, Boolean value, JsonSerializerOptions options) {
-        writer.WriteNumberValue(value ? 1 : 0);
-    }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonPropertyName("next_page")]
+    public Uri? NextPage { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonPropertyName("next_page_offset")]
+    public UInt64? NextPageOffset { get; set; }
 }

@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.Text.Json.Serialization;
+using System.ComponentModel;
 
 namespace YgoProDeck.Lib.EnumValue;
 

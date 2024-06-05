@@ -87,4 +87,7 @@ public partial record QueryParameters {
 
     [QueryConverter("num")]
     public UInt64? Number { get; init; }
+
+    [QueryConverter("offset")]
+    public UInt64? Offset { get; init; }
 }

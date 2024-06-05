@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 namespace YgoProDeck.Lib.Helper;
+
 internal static class ReadOnlyListExtensions {
 
     public static IReadOnlyList<TOutput> ConvertAll<T, TOutput>(this IReadOnlyList<T> sources, Converter<T, TOutput> converter) {

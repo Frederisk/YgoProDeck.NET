@@ -4,6 +4,7 @@ using System.Collections.Generic;
 namespace YgoProDeck.Lib.Helper.Query;
 
 internal class NumberListQueryConverter : QueryConverter {
+
     public override String? WriteValue(Object? value) {
         if (value is null) { return null; }
         if (value is not IReadOnlyList<UInt64> numbers) {
