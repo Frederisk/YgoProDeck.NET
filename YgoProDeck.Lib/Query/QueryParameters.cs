@@ -6,7 +6,7 @@ using YgoProDeck.Lib.Helper.Query;
 
 namespace YgoProDeck.Lib.Query;
 
-public partial record Parameters {
+public partial record QueryParameters {
     [QueryConverter("name", typeof(CardNameListQueryConverter))]
     public IReadOnlyList<String>? Name { get; init; }
 

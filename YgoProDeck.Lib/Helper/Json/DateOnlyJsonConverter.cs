@@ -5,8 +5,9 @@ using System.Text.Json.Serialization;
 namespace YgoProDeck.Lib.Helper.Json;
 
 internal class DateOnlyJsonConverter : JsonConverter<DateOnly> {
+
     public override DateOnly Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
-        String? rawString = reader.GetString() ?? throw new InvalidOperationException();
+        String? rawString = reader.GetString() ?? throw new JsonException("Expected string value.");
         return DateOnly.ParseExact(rawString, "yyyy-MM-dd");
     }
 

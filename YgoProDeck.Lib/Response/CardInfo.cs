@@ -10,10 +10,18 @@ namespace YgoProDeck.Lib.Response;
 
 public partial record CardInfo {
     [JsonPropertyName("data")]
-    public IReadOnlyList<Datum> Data { get; set; }
+    public IReadOnlyList<CardData> Data { get; set; }
+
+    //[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    //[JsonPropertyName("meta")]
+    //public Meta Meta { get; init; }
 }
 
-public partial record Datum {
+//public partial record Meta {
+//    public UInt64 
+//}
+
+public partial record CardData {
     // All Cards
     [JsonPropertyName("id")]
     public UInt64 Id { get; set; }

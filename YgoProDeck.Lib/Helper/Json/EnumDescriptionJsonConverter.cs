@@ -39,7 +39,7 @@ internal class EnumDescriptionJsonConverter<T> : JsonConverter<T> where T : Enum
             return result;
         }
 
-        throw new ArgumentException($"Unable to parse '{rawString}' to enum {typeToConvert.Name} by it's description.");
+        throw new JsonException($"Unable to parse '{rawString}' to enum {typeToConvert.Name} by it's description.");
     }
 
     public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options) {
