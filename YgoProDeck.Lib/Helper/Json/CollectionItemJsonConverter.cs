@@ -1,41 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Globalization;
-using System.Reflection;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+﻿//using System;
+//using System.Text.Json;
+//using System.Text.Json.Serialization;
 
-namespace YgoProDeck.Lib.EnumValue;
-
-//public enum SetEdition { Limited, The1StEdition, Unlimited };
-
-public class EnumDescriptionJsonConverter<T> : JsonConverter<T> where T : Enum {
-
-    public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
-        // json string to enum
-        String? rawString = reader.GetString() ?? throw new NullReferenceException();
-        // Create Enum-Descrption Dictionary
-        Dictionary<String, T> dict = [];
-        foreach (T value in Enum.GetValues(typeToConvert)) {
-            Type type = value.GetType();
-            String name = Enum.GetName(type, value) ?? throw new InvalidOperationException();
-            FieldInfo field = type.GetField(name) ?? throw new InvalidOperationException();
-            DescriptionAttribute attribute = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute ?? throw new InvalidOperationException();
-            dict.Add(attribute.Description.ToLower(CultureInfo.InvariantCulture), value);
-        }
-        return dict[rawString.ToLower(CultureInfo.InvariantCulture)];
-    }
-
-    public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options) {
-        //throw new NotImplementedException();
-        var type = value.GetType();
-        var name = Enum.GetName(type, value) ?? throw new InvalidOperationException();
-        var field = type.GetField(name) ?? throw new InvalidOperationException();
-        var attribute = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute ?? throw new InvalidOperationException();
-        writer.WriteStringValue(attribute.Description);
-    }
-}
+//namespace YgoProDeck.Lib.Helper.Json;
 
 ///// <summary>
 ///// Json collection converter.

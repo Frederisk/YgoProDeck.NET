@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace YgoProDeck.Lib.Query;
+namespace YgoProDeck.Lib.Helper.Query;
 
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-public class QueryConverterAttribute : Attribute {
+internal class QueryConverterAttribute : Attribute {
     public QueryConverter Converter { get; init; }
 
     public String Name { get; init; }
@@ -17,12 +17,12 @@ public class QueryConverterAttribute : Attribute {
     }
 }
 
-public abstract class QueryConverter {
+internal abstract class QueryConverter {
 
     public abstract String? WriteValue(Object? value);
 }
 
-public class ToStringConverter : QueryConverter {
+internal class ToStringConverter : QueryConverter {
 
     public override String? WriteValue(Object? value) {
         return value?.ToString();

@@ -1,47 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Reflection;
 
 using YgoProDeck.Lib.EnumValue;
+using YgoProDeck.Lib.Helper.Query;
 
 namespace YgoProDeck.Lib.Query;
 
 public partial record Parameters {
-    [QueryConverter("name", typeof(CardNameListConverter))]
+    [QueryConverter("name", typeof(CardNameListQueryConverter))]
     public IReadOnlyList<String>? Name { get; init; }
 
     [QueryConverter("fname")]
     public String? FuzzyName { get; init; }
 
-    [QueryConverter("id", typeof(EightNumberListConverter))]
+    [QueryConverter("id", typeof(EightNumberListQueryConverter))]
     public IReadOnlyList<UInt64>? ID { get; init; }
 
-    [QueryConverter("konami_id", typeof(NumberListConverter))]
+    [QueryConverter("konami_id", typeof(NumberListQueryConverter))]
     public IReadOnlyList<UInt64>? KonamiID { get; init; }
 
-    [QueryConverter("type", typeof(EnumListDescriptionConverter<CardType>))]
+    [QueryConverter("type", typeof(EnumListDescriptionQueryConverter<CardType>))]
     public IReadOnlyList<CardType>? Type { get; init; }
 
-    [QueryConverter("atk", typeof(ComparableNumberConverter))]
+    [QueryConverter("atk", typeof(ComparableNumberQueryConverter))]
     public (UInt64 Number, ValueCompare Compare)? ATK { get; init; }
 
-    [QueryConverter("def", typeof(ComparableNumberConverter))]
+    [QueryConverter("def", typeof(ComparableNumberQueryConverter))]
     public (UInt64 Number, ValueCompare Compare)? DEF { get; init; }
 
-    [QueryConverter("level", typeof(ComparableNumberConverter))]
+    [QueryConverter("level", typeof(ComparableNumberQueryConverter))]
     public (UInt64 Number, ValueCompare Compare)? Level { get; init; }
 
-    [QueryConverter("race", typeof(EnumListDescriptionConverter<Race>))]
+    [QueryConverter("race", typeof(EnumListDescriptionQueryConverter<Race>))]
     public IReadOnlyList<Race>? Race { get; init; }
 
-    [QueryConverter("attribute", typeof(EnumListDescriptionConverter<MonsterAttribute>))]
+    [QueryConverter("attribute", typeof(EnumListDescriptionQueryConverter<MonsterAttribute>))]
     public IReadOnlyList<MonsterAttribute>? Attribute { get; init; }
 
     [QueryConverter("link")]
     public UInt64? Link { get; init; }
 
-    [QueryConverter("linkmarker", typeof(EnumListDescriptionConverter<LinkMarker>))]
+    [QueryConverter("linkmarker", typeof(EnumListDescriptionQueryConverter<LinkMarker>))]
     public IReadOnlyList<LinkMarker>? LinkMarker { get; init; } // Flags
 
     [QueryConverter("scale")]
@@ -53,34 +52,34 @@ public partial record Parameters {
     [QueryConverter("archetype")]
     public String? Archetype { get; init; }
 
-    [QueryConverter("banlist", typeof(EnumDescriptionConverter))]
+    [QueryConverter("banlist", typeof(EnumDescriptionQueryConverter))]
     public Banlist? Banlist { get; init; }
 
-    [QueryConverter("sort", typeof(EnumDescriptionConverter))]
+    [QueryConverter("sort", typeof(EnumDescriptionQueryConverter))]
     public Sort? Sort { get; init; }
 
-    [QueryConverter("format", typeof(EnumDescriptionConverter))]
+    [QueryConverter("format", typeof(EnumDescriptionQueryConverter))]
     public Format? Format { get; init; }
 
-    [QueryConverter("misc", typeof(YesOrNullConverter))]
+    [QueryConverter("misc", typeof(YesOrNullQueryConverter))]
     public Boolean Misc { get; init; } // Default: False
 
-    [QueryConverter("staple", typeof(YesOrNullConverter))]
+    [QueryConverter("staple", typeof(YesOrNullQueryConverter))]
     public Boolean Staple { get; init; } // Default: False
 
     [QueryConverter("has_effect")]
     public Boolean? HasEffect { get; init; }
 
-    [QueryConverter("startdate")]
+    [QueryConverter("startdate", typeof(DateOnlyQueryConverter))]
     public DateOnly? StartDate { get; init; }
 
-    [QueryConverter("enddate")]
+    [QueryConverter("enddate", typeof(DateOnlyQueryConverter))]
     public DateOnly? EndDate { get; init; }
 
-    [QueryConverter("dateregion", typeof(EnumDescriptionConverter))]
+    [QueryConverter("dateregion", typeof(EnumDescriptionQueryConverter))]
     public DateRegion? DateRegion { get; init; }
 
-    [QueryConverter("language", typeof(LanguageConverter))]
+    [QueryConverter("language", typeof(LanguageQueryConverter))]
     public Language Language { get; init; } // Default: English
 
     [QueryConverter("tcgplayer_data")]
@@ -88,123 +87,4 @@ public partial record Parameters {
 
     [QueryConverter("num")]
     public UInt64? Number { get; init; }
-
-    #region Converter
-
-    protected class CardNameListConverter : QueryConverter {
-        public override String? WriteValue(Object? value) {
-            if (value is null) { return null; }
-            if (value is not IReadOnlyList<String> names) {
-                throw new ArgumentException($"Invalid type {value.GetType().Name}, expected {typeof(IReadOnlyList<String>).Name}");
-            }
-            return String.Join("|", names);
-        }
-    }
-
-    //protected class EightNumberConverter : QueryConverter {
-    //    public override String? WriteValue(Object? value) {
-    //        if (value is not UInt64 number) {
-    //            return null;
-    //        }
-    //        return number.ToString("D8");
-    //    }
-    //}
-
-    protected class EightNumberListConverter : QueryConverter {
-        public override String? WriteValue(Object? value) {
-            if (value is null) { return null; }
-            if (value is not IReadOnlyList<UInt64> numbers) {
-                throw new ArgumentException($"Invalid type {value.GetType().Name}, expected {typeof(IReadOnlyList<UInt64>).Name}");
-            }
-            return String.Join(",", numbers.ConvertAll(item => item.ToString("D8")));
-        }
-    }
-    protected class NumberListConverter : QueryConverter {
-        public override String? WriteValue(Object? value) {
-            if (value is null) { return null; }
-            if (value is not IReadOnlyList<UInt64> numbers) {
-                throw new ArgumentException($"Invalid type {value.GetType().Name}, expected {typeof(IReadOnlyList<UInt64>).Name}");
-            }
-            return String.Join(",", numbers);
-        }
-    }
-
-    protected class EnumDescriptionConverter : QueryConverter {
-        public override String? WriteValue(Object? value) {
-            if (value is null) { return null; }
-            if (value is not Enum enumValue) {
-                throw new ArgumentException($"Invalid type {value.GetType().Name}, expected {typeof(Enum).Name}");
-            }
-            return GetEnumDescription(enumValue);
-        }
-    }
-
-    protected class EnumListDescriptionConverter<T> : QueryConverter where T : Enum {
-        public override String? WriteValue(Object? value) {
-            if (value is null) { return null; }
-            if (value is not IReadOnlyList<T> enums) {
-                throw new ArgumentException($"Invalid type {value.GetType().Name}, expected {typeof(IReadOnlyList<T>).Name}");
-            }
-            return String.Join(",", enums.ConvertAll(item => GetEnumDescription(item)));
-        }
-    }
-
-    protected class ComparableNumberConverter : QueryConverter {
-        public override String? WriteValue(Object? value) {
-            if (value is null) { return null; }
-            if (value is not ValueTuple<UInt64, ValueCompare>(UInt64 Number, ValueCompare Compare)) {
-                throw new ArgumentException($"Invalid type {value.GetType().Name}, expected {typeof(ValueTuple<UInt64, ValueCompare>).Name}");
-            }
-            return $"{GetEnumDescription(Compare)}{Number}";
-        }
-    }
-
-    protected class YesOrNullConverter : QueryConverter {
-        public override String? WriteValue(Object? value) {
-            if (value is null) { return null; }
-            if (value is not Boolean boolean) {
-                throw new ArgumentException($"Invalid type {value.GetType().Name}, expected {typeof(Boolean).Name}");
-            }
-            return boolean ? "yes" : null;
-        }
-    }
-
-    protected class LanguageConverter : QueryConverter {
-        public override String? WriteValue(Object? value) {
-            if (value is null) { return null; }
-            if (value is not Language language) {
-                throw new ArgumentException($"Invalid type {value.GetType().Name}, expected {typeof(Language).Name}");
-            }
-            String description = GetEnumDescription(language);
-            return String.IsNullOrEmpty(description) ? null : description;
-        }
-    }
-
-    protected static String GetEnumDescription<T>(T value) where T : Enum {
-        //ArgumentNullException.ThrowIfNull(value);
-        String name = Enum.GetName(value.GetType(), value) ?? throw new NullReferenceException($"Name not found for {value}");
-        FieldInfo field = value.GetType().GetField(name) ?? throw new NullReferenceException($"Field {name} not found in {value.GetType().Name}");
-        DescriptionAttribute attribute = System.Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute ?? throw new NullReferenceException($"{nameof(DescriptionAttribute)} not found in {name}");
-        return attribute.Description;
-    }
-
-    //private static String GetPropertyDescription<T>(String propertyName) {
-    //    ArgumentNullException.ThrowIfNull(propertyName);
-    //    PropertyInfo property = typeof(T).GetProperty(propertyName) ?? throw new NullReferenceException($"Property {propertyName} not found in {typeof(T).Name}");
-    //    DescriptionAttribute attribute = Attribute.GetCustomAttribute(property, typeof(DescriptionAttribute)) as DescriptionAttribute ?? throw new NullReferenceException($"{nameof(DescriptionAttribute)} not found in {propertyName}");
-    //    return attribute!.Description;
-    //}
-
-    #endregion Converter
-}
-
-internal static class IReadOnlyListExtensions {
-
-    public static IReadOnlyList<TOutput> ConvertAll<T, TOutput>(this IReadOnlyList<T> sources, Converter<T, TOutput> converter) {
-        List<TOutput> results = new(sources.Count);
-        foreach (T source in sources) {
-            results.Add(converter(source));
-        }
-        return results;
-    }
 }

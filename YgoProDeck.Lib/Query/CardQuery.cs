@@ -3,6 +3,8 @@ using System.Collections.Specialized;
 using System.Reflection;
 using System.Web;
 
+using YgoProDeck.Lib.Helper.Query;
+
 namespace YgoProDeck.Lib.Query;
 
 public static class CardQuery {

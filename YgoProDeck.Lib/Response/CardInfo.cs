@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using YgoProDeck.Lib.EnumValue;
+using YgoProDeck.Lib.Helper.Json;
 
 namespace YgoProDeck.Lib.Response;
 
@@ -181,9 +182,11 @@ public partial record MiscInfo {
     public IReadOnlyList<Format> Formats { get; set; }
 
     [JsonPropertyName("tcg_date")]
+    [JsonConverter(typeof(DateOnlyJsonConverter))]
     public DateOnly TcgDate { get; set; }
 
     [JsonPropertyName("ocg_date")]
+    [JsonConverter(typeof(DateOnlyJsonConverter))]
     public DateOnly OcgDate { get; set; }
 
     [JsonPropertyName("konami_id")]
