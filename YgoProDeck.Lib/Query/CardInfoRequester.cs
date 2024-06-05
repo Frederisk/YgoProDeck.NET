@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Specialized;
 using System.IO;
 using System.Net.Http;
@@ -14,24 +14,43 @@ using YgoProDeck.Lib.Response;
 
 namespace YgoProDeck.Lib.Query;
 
-public class CardRequester {
+/// <summary>
+/// The requester for card info.
+/// </summary>
+public class CardInfoRequester {
     public static readonly String BaseUrl = "https://db.ygoprodeck.com/api/v7/cardinfo.php";
 
     public Uri Uri { get; }
 
-    public CardRequester(Uri uri) {
+    /// <summary>
+    /// Create a new instance of <see cref="CardInfoRequester"/>.
+    /// </summary>
+    /// <param name="uri">
+    /// The <see cref="Uri"/> to request card info.
+    /// </param>
+    public CardInfoRequester(Uri uri) {
         this.Uri = uri;
     }
 
-    public CardRequester(QueryParameters pars) {
+    /// <summary>
+    /// Create a new instance of <see cref="CardInfoRequester"/>.
+    /// </summary>
+    /// <param name="pars">
+    /// The <see cref="QueryParameters"/> for the card info request.
+    /// </param>
+    public CardInfoRequester(QueryParameters pars) {
         this.Uri = CreateQueryURI(pars);
     }
 
     /// <summary>
-    ///
+    /// Request card info asynchronously.
     /// </summary>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
+    /// <param name="cancellationToken">
+    /// The <see cref="CancellationToken"/> to cancel the operation.
+    /// </param>
+    /// <returns>
+    /// The <see cref="CardInfo"/> if the request is successful; otherwise, <see langword="null"/>.
+    /// </returns>
     /// <exception cref="HttpRequestException">
     /// The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.
     /// -or- failed to get card data.
@@ -41,6 +60,7 @@ public class CardRequester {
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// The Uri is invalid.
+    /// -or- Deserialization failed.
     /// </exception>
     /// <exception cref="JsonException">
     /// The JSON is invalid.
@@ -61,7 +81,7 @@ public class CardRequester {
     /// <exception cref="NullReferenceException">
     /// Deserialization failed.
     /// </exception>
-    public async Task<CardInfo?> RequestCardInfoAsync(CancellationToken cancellationToken) {
+    public async Task<CardInfo> RequestAsync(CancellationToken cancellationToken) {
         using HttpClient client = new();
         using HttpResponseMessage response = await client.GetAsync(this.Uri, cancellationToken);
         if (!response.IsSuccessStatusCode) {
@@ -77,8 +97,11 @@ public class CardRequester {
 
         using Stream content = await response.Content.ReadAsStreamAsync(cancellationToken);
         CardInfo? cardInfo = await JsonSerializer.DeserializeAsync<CardInfo>(content, cancellationToken: cancellationToken);
-        return cardInfo;
+        return cardInfo!; // TODO: handle null
     }
+
+    public async Task<CardInfo?> RequestAsync() => 
+        await RequestAsync(CancellationToken.None);
 
     public static Uri CreateQueryURI(QueryParameters pars) {
         UriBuilder uri = new(BaseUrl);

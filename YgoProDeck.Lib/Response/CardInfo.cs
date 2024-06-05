@@ -7,6 +7,8 @@ using YgoProDeck.Lib.Helper.Json;
 
 namespace YgoProDeck.Lib.Response;
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
 public partial record CardInfo {
     [JsonPropertyName("data")]
     public IReadOnlyList<CardData> Data { get; init; }
@@ -168,21 +170,29 @@ public partial record CardSet {
 }
 
 public partial record MiscInfo {
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonPropertyName("beta_name")]
+    public String? BetaName { get; init; }
+
     [JsonPropertyName("views")]
     public UInt64 Views { get; init; }
 
     [JsonPropertyName("viewsweek")]
-    public UInt64 Viewsweek { get; init; }
+    public UInt64 ViewsWeek { get; init; }
 
     [JsonPropertyName("upvotes")]
-    public UInt64 Upvotes { get; init; }
+    public UInt64 UpVotes { get; init; }
 
     [JsonPropertyName("downvotes")]
-    public UInt64 Downvotes { get; init; }
+    public UInt64 DownVotes { get; init; }
 
     [JsonPropertyName("formats")]
     //[JsonConverter(typeof(CollectionItemJsonConverter<Format, EnumDescriptionJsonConverter<Format>>))]
     public IReadOnlyList<Format> Formats { get; init; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonPropertyName("treated_as")]
+    public String? TreatedAs { get; init; }
 
     [JsonPropertyName("tcg_date")]
     [JsonConverter(typeof(DateOnlyJsonConverter))]
@@ -235,3 +245,5 @@ public partial record Meta {
     [JsonPropertyName("next_page_offset")]
     public UInt64? NextPageOffset { get; init; }
 }
+
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

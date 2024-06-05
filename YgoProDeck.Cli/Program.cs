@@ -15,9 +15,9 @@ public class Program {
             //Misc = true,
             Number = 10,
         };
-        CardRequester requester = new(parameters);
+        CardInfoRequester requester = new(parameters);
         
-        CardInfo? cardInfo = await requester.RequestCardInfoAsync(CancellationToken.None);
+        CardInfo? cardInfo = await requester.RequestAsync(CancellationToken.None);
 
         Console.WriteLine(cardInfo?.Data.Count);
     }
