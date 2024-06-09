@@ -37,7 +37,6 @@ namespace YgoProDeck.Telegram {
             User me = await bot.GetMeAsync();
             using CancellationTokenSource cancellationSource = new();
             bot.StartReceiving(HandleUpdateAsync, PollingErrorHandler, null, cancellationSource.Token);
-            //Console.WriteLine($"Start listening for @{me.Username}");
             await Logging(bot, $"Start listening for @{me.Username}");
             while (true) {
                 var exit = Console.ReadLine();
@@ -115,7 +114,6 @@ namespace YgoProDeck.Telegram {
             List<InlineQueryResult> results = [];
 
             if (await semaphore.WaitAsync(TimeSpan.FromMilliseconds(200))) {
-                //Console.WriteLine("Start");
                 try {
                     // Web
                     CardInfoRequester requester = new(par);
@@ -132,14 +130,20 @@ namespace YgoProDeck.Telegram {
                         if (data.Level is not null) builder.AppendLine($"<b>Level/Rank: </b>{data.Level}");
                         if (data.LinkValue is not null) builder.AppendLine($"<b>Link: </b>{data.LinkValue}");
                         if (data.LinkMarkers is not null) builder.AppendLine($"<b>LinkMarkers: </b>{String.Join(", ", data.LinkMarkers.Select(AttributeHelper.GetEnumDescription))}");
+                        if(data.BanlistInfo is not null) {
+                            if (data.BanlistInfo.BanTcg is not null) builder.AppendLine($"<b>TCG Banlist: </b>{data.BanlistInfo.BanTcg}");
+                            if (data.BanlistInfo.BanOcg is not null) builder.AppendLine($"<b>OCG Banlist: </b>{data.BanlistInfo.BanOcg}");
+                        }
                         builder.AppendLine();
                         builder.AppendLine($"{data.Desc}");
                         builder.AppendLine();
                         if (data.Atk is not null) builder.AppendLine($"<b>ATK: </b>{data.Atk}");
                         if (data.Def is not null) builder.AppendLine($"<b>DEF: </b>{data.Def}");
-                        builder.AppendLine();
-                        if (data.Archetype is not null) builder.AppendLine($"<b>Archetype: </b>{data.Archetype}");
-                        builder.AppendLine();
+                        if (data.Def is not null || data.Atk is not null) builder.AppendLine();
+                        if (data.Archetype is not null) {
+                            builder.AppendLine($"<b>Archetype: </b>{data.Archetype}");
+                            builder.AppendLine();
+                        }
                         if (data.CardImages is not null && data.CardImages.Count > 0) {
                             builder.Append($"<a href=\"{data.CardImages[0].ImageUrlCropped}\">CroppedImage</a> <a href=\"{data.CardImages[0].ImageUrl}\">FullImage</a> ");
                         }

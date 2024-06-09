@@ -211,14 +211,18 @@ public partial record MiscInfo {
 }
 
 public partial record BanlistInfo {
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("ban_tcg")]
-    public BanStatus BanTcg { get; init; }
+    public BanStatus? BanTcg { get; init; }
 
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("ban_ocg")]
-    public BanStatus BanOcg { get; init; }
+    public BanStatus? BanOcg { get; init; }
 
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("ban_goat")]
-    public BanStatus BanGoat { get; init; }
+    public BanStatus? BanGoat { get; init; }
 }
 
 public partial record Meta {
