@@ -125,7 +125,7 @@ namespace YgoProDeck.Telegram {
                         StringBuilder builder = new();
                         builder.AppendLine($"<b>{data.Name}</b>");
                         builder.AppendLine();
-                        builder.AppendLine($"<b>CardType: </b>{data.Type}");
+                        builder.AppendLine($"<b>CardType: </b>{AttributeHelper.GetEnumDescription(data.Type)}");
                         builder.AppendLine($"<b>ID/KonamiID: </b>{data.Id}/{data.MiscInfo?.FirstOrDefault()?.KonamiId}");
                         if (data.Attribute is not null) builder.AppendLine($"<b>Attribute: </b>{data.Attribute}");
                         if (data.Race is not null) builder.AppendLine($"<b>Race: </b>{data.Race}");
@@ -137,6 +137,7 @@ namespace YgoProDeck.Telegram {
                         builder.AppendLine();
                         if (data.Atk is not null) builder.AppendLine($"<b>ATK: </b>{data.Atk}");
                         if (data.Def is not null) builder.AppendLine($"<b>DEF: </b>{data.Def}");
+                        builder.AppendLine();
                         if (data.Archetype is not null) builder.AppendLine($"<b>Archetype: </b>{data.Archetype}");
                         builder.AppendLine();
                         if (data.CardImages is not null && data.CardImages.Count > 0) {
@@ -147,12 +148,14 @@ namespace YgoProDeck.Telegram {
 
                         results.Add(
                             new InlineQueryResultArticle(
-                                $"{data.Name} || {data.Id:D8}",
+                                data.Id.ToString("D8"),
                                 data.Name,
                                 new InputTextMessageContent(builder.ToString()) {
                                     ParseMode = ParseMode.Html,
                                 }
-                            )
+                            ){
+                                Description = AttributeHelper.GetEnumDescription(data.Type),
+                            }
                         );
                     }
                 } catch (HttpRequestException) {
@@ -185,9 +188,11 @@ namespace YgoProDeck.Telegram {
             if (message.Text is null) {
                 return;
             }
-            await botClient.SendTextMessageAsync(
-                chatId: message.Chat,
-                text: """
+
+            if (message.Text.StartsWith("/start")) {
+                await botClient.SendTextMessageAsync(
+                    chatId: message.Chat,
+                    text: """
                 Hello, I'm @InYgoProDeckBot!
                 I can help you to search for Yu-Gi-Oh! cards.
 
@@ -199,15 +204,9 @@ namespace YgoProDeck.Telegram {
 
                 For more information, you can visit <https://github.com/Frederisk/YgoProDeck.NET>
                 """,
-                parseMode: ParseMode.Markdown
-                );
-
-            // if (message.Text.StartsWith("/start")) {
-            //     await botClient.SendTextMessageAsync(
-            //         chatId: message.Chat,
-            //         text: "Hello, I'm YgoProDeckBot. I can help you to search for Yu-Gi-Oh! cards. Just type the card name and I will show you the details.");
-            //     return;
-            // }
+                    parseMode: ParseMode.Markdown
+                    );
+            }
 
             // if (message.Text.StartsWith("/help")) {
             //     await botClient.SendTextMessageAsync(
