@@ -32,7 +32,7 @@ public partial record QueryParameters {
     /// The Konami ID of the card. This is not the passcode.
     /// </summary>
     [QueryConverter("konami_id", typeof(NumberListQueryConverter))]
-    public IReadOnlyList<UInt64>? KonamiID { get; init; }
+    public IReadOnlyList<Int64>? KonamiID { get; init; }
 
     /// <summary>
     /// The type of card you want to filter by.

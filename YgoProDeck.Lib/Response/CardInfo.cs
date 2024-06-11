@@ -194,16 +194,19 @@ public partial record MiscInfo {
     [JsonPropertyName("treated_as")]
     public String? TreatedAs { get; init; }
 
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("tcg_date")]
     [JsonConverter(typeof(DateOnlyJsonConverter))]
-    public DateOnly TcgDate { get; init; }
+    public DateOnly? TcgDate { get; init; }
 
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("ocg_date")]
     [JsonConverter(typeof(DateOnlyJsonConverter))]
-    public DateOnly OcgDate { get; init; }
+    public DateOnly? OcgDate { get; init; }
 
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("konami_id")]
-    public UInt64 KonamiId { get; init; }
+    public Int64? KonamiId { get; init; }
 
     [JsonPropertyName("has_effect")]
     [JsonConverter(typeof(NumberBooleanJsonConverter))]
