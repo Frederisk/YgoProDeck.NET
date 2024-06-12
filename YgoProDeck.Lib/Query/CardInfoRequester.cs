@@ -104,6 +104,8 @@ public class CardInfoRequester {
         await RequestAsync(CancellationToken.None);
 
     public static Uri CreateQueryURI(QueryParameters pars) {
+        ArgumentNullException.ThrowIfNull(pars);
+
         UriBuilder uri = new(BaseUrl);
         NameValueCollection query = HttpUtility.ParseQueryString(uri.Query);
 
