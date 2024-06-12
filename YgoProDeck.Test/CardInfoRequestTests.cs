@@ -7,6 +7,7 @@ using YgoProDeck.Lib.Response;
 
 namespace YgoProDeck.Test;
 
+[TestFixture]
 public class CardInfoRequestTests {
 
     [SetUp]
