@@ -1,21 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Types.InlineQueryResults;
-
-using YgoProDeck.Lib.EnumValue;
-using YgoProDeck.Lib.Helper;
-using YgoProDeck.Lib.Query;
-using YgoProDeck.Lib.Response;
 
 namespace YgoProDeck.Telegram {
 
@@ -64,8 +53,6 @@ namespace YgoProDeck.Telegram {
             await Logging(bot, $"Exception while polling for updates: {ex}");
             return;
         }
-
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         private static async Task Logging(ITelegramBotClient botClient, String message) {
             try {
