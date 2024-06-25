@@ -57,7 +57,7 @@ namespace YgoProDeck.Telegram {
         private static async Task Logging(ITelegramBotClient botClient, String message) {
             try {
                 await botClient.SendTextMessageAsync(
-                    new ChatId(-743853037),
+                    new ChatId(-1002201062127),
                     message);
             } catch (Exception ex) {
                 Console.WriteLine($"Exception while logging: {ex}");
