@@ -114,19 +114,18 @@ public static partial class Program {
         StringBuilder builder = new();
         builder.AppendLine($"<b>{data.Name}</b>");
         builder.AppendLine();
-        builder.AppendLine($"<b>CardType: </b>{AttributeHelper.GetEnumDescription(data.Type)}");
-        builder.AppendLine($"<b>ID/KonamiID: </b>{data.Id}/{data.MiscInfo?.FirstOrDefault()?.KonamiId}");
-        if (data.Attribute is not null) builder.AppendLine($"<b>Attribute: </b>{data.Attribute}");
-        if (data.Race is not null) builder.AppendLine($"<b>Race: </b>{data.Race}");
-        if (data.Level is not null) builder.AppendLine($"<b>Level/Rank: </b>{data.Level}");
-        if (data.LinkValue is not null) builder.AppendLine($"<b>Link: </b>{data.LinkValue}");
-        if (data.LinkMarkers is not null) builder.AppendLine($"<b>LinkMarkers: </b>{String.Join(", ", data.LinkMarkers.Select(AttributeHelper.GetEnumDescription))}");
-        if (data.BanlistInfo is not null) {
-            if (data.BanlistInfo.BanTcg is not null) builder.AppendLine($"<b>TCG Banlist: </b>{data.BanlistInfo.BanTcg}");
-            if (data.BanlistInfo.BanOcg is not null) builder.AppendLine($"<b>OCG Banlist: </b>{data.BanlistInfo.BanOcg}");
-        }
-        var md_rarity = data.MiscInfo?.FirstOrDefault()?.MDRarity;
-        if (md_rarity is not null) builder.AppendLine($"<b>Master Duel Rarity: </b> {AttributeHelper.GetEnumDescription(md_rarity.Value)}");
+        AppendInfoString(builder, data.Type, "CardType", AttributeHelper.GetEnumDescription);
+        String id_konamiid = data.Id.ToString("D8") + "/" + data.MiscInfo?.FirstOrDefault()?.KonamiId;
+        AppendInfoString(builder, id_konamiid, "ID/KonamiID", i => i);
+        AppendInfoString(builder, data.Attribute, "Attribute", i => i!.Value.ToString());
+        AppendInfoString(builder, data.Race, "Race", i => i);
+        AppendInfoString(builder, data.Level, "Level/Rank", i => i!.Value.ToString());
+        AppendInfoString(builder, data.LinkValue, "Link", i => i!.Value.ToString());
+        AppendInfoString(builder, data.LinkMarkers, "LinkMarkers", i => String.Join(", ", i.Select(AttributeHelper.GetEnumDescription)));
+        AppendInfoString(builder, data.BanlistInfo?.BanTcg, "TCG Banlist", i => i!.Value.ToString());
+        AppendInfoString(builder, data.BanlistInfo?.BanOcg, "OCG Banlist", i => i!.Value.ToString());
+        MasterDuelRarity? md_rarity = data.MiscInfo?.FirstOrDefault()?.MDRarity;
+        AppendInfoString(builder, md_rarity, "Master Duel Rarity", i => AttributeHelper.GetEnumDescription(i!.Value));
 
         builder.AppendLine();
         builder.AppendLine($"{data.Desc}");
@@ -144,6 +143,12 @@ public static partial class Program {
         builder.Append($"<a href=\"{data.YgoProDeckUrl}\">YgoProDeck</a>");
         //builder.AppendLine()
         return builder.ToString();
+    }
+
+    private static void AppendInfoString<T>(StringBuilder builder, T? input, String key, Func<T, String> funcValue) {
+        if (input is not null) {
+            builder.AppendLine($"<b>${key}: </b>${funcValue(input)}");
+        }
     }
 
     private static async Task BotOnChosenInlineResultReceived(ITelegramBotClient botClient, ChosenInlineResult chosenInlineResult) {
