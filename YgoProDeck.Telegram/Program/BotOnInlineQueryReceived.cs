@@ -147,7 +147,7 @@ public static partial class Program {
 
     private static void AppendInfoString<T>(StringBuilder builder, T? input, String key, Func<T, String> funcValue) {
         if (input is not null) {
-            builder.AppendLine($"<b>${key}: </b>${funcValue(input)}");
+            builder.AppendLine($"<b>{key}: </b>{funcValue(input)}");
         }
     }
 
