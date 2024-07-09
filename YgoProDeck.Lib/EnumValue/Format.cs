@@ -14,6 +14,9 @@ public enum Format {
     [Description("OCG")]
     OCG,
 
+    [Description("GOAT")]
+    Goat,
+
     [Description("OCG GOAT")]
     OCGGoat,
 
@@ -26,10 +29,10 @@ public enum Format {
     [Description("Duel Links")]
     DuelLinks,
 
-    // Undocumented
+    [Description("Master Duel")]
+    MasterDuel,
 
-    [Description("GOAT")]
-    Goat,
+    // Undocumented
 
     [Description("Common Charity")]
     CommonCharity,

@@ -125,6 +125,9 @@ public static partial class Program {
             if (data.BanlistInfo.BanTcg is not null) builder.AppendLine($"<b>TCG Banlist: </b>{data.BanlistInfo.BanTcg}");
             if (data.BanlistInfo.BanOcg is not null) builder.AppendLine($"<b>OCG Banlist: </b>{data.BanlistInfo.BanOcg}");
         }
+        var md_rarity = data.MiscInfo?.FirstOrDefault()?.MDRarity;
+        if (md_rarity is not null) builder.AppendLine($"<b>Master Duel Rarity: </b> {AttributeHelper.GetEnumDescription(md_rarity.Value)}");
+
         builder.AppendLine();
         builder.AppendLine($"{data.Desc}");
         builder.AppendLine();

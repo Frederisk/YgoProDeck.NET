@@ -208,6 +208,10 @@ public partial record MiscInfo {
     [JsonPropertyName("konami_id")]
     public Int64? KonamiId { get; init; }
 
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonPropertyName("md_rarity")]
+    public MasterDuelRarity? MDRarity { get; init; }
+
     [JsonPropertyName("has_effect")]
     [JsonConverter(typeof(NumberBooleanJsonConverter))]
     public Boolean HasEffect { get; init; } // Number to Boolean
