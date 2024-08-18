@@ -8,7 +8,7 @@ namespace YgoProDeck.Lib.EnumValue;
 [JsonConverter(typeof(EnumDescriptionJsonConverter<BanStatus>))]
 public enum BanStatus {
 
-    [Description("Banned")] // Forbidden
+    [Description("Forbidden")]
     Forbidden,
 
     [Description("Limited")]

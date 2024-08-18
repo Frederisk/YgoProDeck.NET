@@ -115,8 +115,8 @@ public static partial class Program {
         builder.AppendLine($"<b>{data.Name}</b>");
         builder.AppendLine();
         AppendInfoString(builder, data.Type, "CardType", AttributeHelper.GetEnumDescription);
-        String id_konamiid = data.Id.ToString("D8") + "/" + data.MiscInfo?.FirstOrDefault()?.KonamiId;
-        AppendInfoString(builder, id_konamiid, "ID/KonamiID", i => i);
+        String konami_id = data.Id.ToString("D8") + "/" + data.MiscInfo?.FirstOrDefault()?.KonamiId;
+        AppendInfoString(builder, konami_id, "ID/KonamiID", i => i);
         AppendInfoString(builder, data.Attribute, "Attribute", i => i!.Value.ToString());
         AppendInfoString(builder, data.Race, "Race", i => i);
         AppendInfoString(builder, data.Level, "Level/Rank", i => i!.Value.ToString());
@@ -130,8 +130,14 @@ public static partial class Program {
         builder.AppendLine();
         builder.AppendLine($"{data.Desc}");
         builder.AppendLine();
-        if (data.Atk is not null) builder.AppendLine($"<b>ATK: </b>{data.Atk}");
-        if (data.Def is not null) builder.AppendLine($"<b>DEF: </b>{data.Def}");
+        if (data.Atk is not null) {
+            String atk = data.Atk is -1 ? "?" : data.Atk.Value.ToString();
+            builder.AppendLine($"<b>ATK: </b>{atk}");
+        }
+        if (data.Def is not null) {
+            String def = data.Def is -1 ? "?" : data.Def.Value.ToString();
+            builder.AppendLine($"<b>DEF: </b>{def}");
+        }
         if (data.Def is not null || data.Atk is not null) builder.AppendLine();
         if (data.Archetype is not null) {
             builder.AppendLine($"<b>Archetype: </b>{data.Archetype}");

@@ -50,11 +50,11 @@ public partial record CardData {
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("atk")]
-    public UInt64? Atk { get; init; }
+    public Int64? Atk { get; init; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("def")]
-    public UInt64? Def { get; init; }
+    public Int64? Def { get; init; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("level")]
@@ -215,6 +215,16 @@ public partial record MiscInfo {
     [JsonPropertyName("has_effect")]
     [JsonConverter(typeof(NumberBooleanJsonConverter))]
     public Boolean HasEffect { get; init; } // Number to Boolean
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonPropertyName("question_atk")]
+    [JsonConverter(typeof(NumberBooleanJsonConverter))]
+    public Boolean? QuestionAtk { get; init; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonPropertyName("question_def")]
+    [JsonConverter(typeof(NumberBooleanJsonConverter))]
+    public Boolean? QuestionDef { get; init; }
 }
 
 public partial record BanlistInfo {

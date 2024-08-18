@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -7,7 +7,7 @@ namespace YgoProDeck.Lib.Helper.Json;
 public class NumberBooleanJsonConverter : JsonConverter<Boolean> {
 
     public override Boolean Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
-        return reader.GetInt32() == 1;
+        return reader.GetInt32() is 1;
     }
 
     public override void Write(Utf8JsonWriter writer, Boolean value, JsonSerializerOptions options) {
