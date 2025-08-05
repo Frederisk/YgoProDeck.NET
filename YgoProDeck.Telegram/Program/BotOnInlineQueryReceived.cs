@@ -153,13 +153,13 @@ public static partial class Program {
                 builder.AppendLine($"<a href=\"{image.ImageUrlCropped}\">CroppedImage</a> <a href=\"{image.ImageUrl}\">FullImage</a>");
             }
         }
-        builder.AppendLine($"<b>Detail: </b><a href=\"{data.YgoProDeckUrl}\">YgoProDeck</a>");
+        builder.Append($"<b>Detail: </b><a href=\"{data.YgoProDeckUrl}\">YgoProDeck</a>");
         return builder.ToString();
     }
 
     private static void AppendInfoString<T>(StringBuilder builder, T? input, String key, Func<T, String> funcValue) {
         if (input is not null) {
-            builder.Append($"<b>{key}: </b>{funcValue(input)}");
+            builder.AppendLine($"<b>{key}: </b>{funcValue(input)}");
         }
     }
 
