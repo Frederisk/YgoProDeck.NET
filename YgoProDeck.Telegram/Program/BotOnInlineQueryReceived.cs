@@ -150,7 +150,7 @@ public static partial class Program {
         if (data.CardImages is not null && data.CardImages.Count > 0) {
             builder.AppendLine($"<b>Images: </b>");
             foreach (var image in data.CardImages) {
-                builder.Append($"<a href=\"{image.ImageUrlCropped}\">CroppedImage</a> <a href=\"{image.ImageUrl}\">FullImage</a>");
+                builder.AppendLine($"<a href=\"{image.ImageUrlCropped}\">CroppedImage</a> <a href=\"{image.ImageUrl}\">FullImage</a>");
             }
         }
         builder.AppendLine($"<b>Detail: </b><a href=\"{data.YgoProDeckUrl}\">YgoProDeck</a>");
@@ -159,7 +159,7 @@ public static partial class Program {
 
     private static void AppendInfoString<T>(StringBuilder builder, T? input, String key, Func<T, String> funcValue) {
         if (input is not null) {
-            builder.AppendLine($"<b>{key}: </b>{funcValue(input)}");
+            builder.Append($"<b>{key}: </b>{funcValue(input)}");
         }
     }
 
