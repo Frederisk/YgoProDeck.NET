@@ -49,6 +49,7 @@ public static partial class Program {
             try {
                 // Web
                 CardInfoRequester requester = new(par);
+                _ = Logging(botClient, "Url: " + requester.Uri); // Do not block execution.
                 CardInfo a = (await requester.RequestAsync())!;
 
                 foreach (CardData data in a.Data) {
@@ -80,12 +81,15 @@ public static partial class Program {
         await botClient.AnswerInlineQueryAsync(inlineQuery.Id, results);
     }
 
+    [GeneratedRegex(@"^\s*%\s*(\w*)\s*=\s*(.*?)\s*$", RegexOptions.Singleline)]
+    private static partial Regex KeyValueRegex();
+
     private static (Dictionary<String, String> args, String? query) SplitQuery(String argsString) {
         IEnumerable<String> allQuery = argsString.Split(["\r\n", "\r", "\n"], StringSplitOptions.RemoveEmptyEntries).Select(i => i.Trim());
         Dictionary<String, String> argsQuery = [];
         List<String> queries = [];
         foreach (String arg in allQuery) {
-            var match = Regex.Match(arg, @"^\s*%\s*(\w*)\s*=\s*(.*?)\s*$", RegexOptions.Singleline);
+            var match = KeyValueRegex().Match(arg);
             if (match.Success) {
                 argsQuery.Add(match.Groups[1].Value, match.Groups[2].Value.Trim());
             } else {
@@ -144,10 +148,12 @@ public static partial class Program {
             builder.AppendLine();
         }
         if (data.CardImages is not null && data.CardImages.Count > 0) {
-            builder.Append($"<a href=\"{data.CardImages[0].ImageUrlCropped}\">CroppedImage</a> <a href=\"{data.CardImages[0].ImageUrl}\">FullImage</a> ");
+            builder.AppendLine($"<b>Images: </b>");
+            foreach (var image in data.CardImages) {
+                builder.Append($"<a href=\"{image.ImageUrlCropped}\">CroppedImage</a> <a href=\"{image.ImageUrl}\">FullImage</a>");
+            }
         }
-        builder.Append($"<a href=\"{data.YgoProDeckUrl}\">YgoProDeck</a>");
-        //builder.AppendLine()
+        builder.AppendLine($"<b>Detail: </b><a href=\"{data.YgoProDeckUrl}\">YgoProDeck</a>");
         return builder.ToString();
     }
 

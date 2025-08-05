@@ -13,7 +13,7 @@ public class CardInfoRequestTests {
     [SetUp]
     public void Setup() { }
 
-    public static IEnumerable<QueryParameters> GetQueryParameters() {
+    private static IEnumerable<QueryParameters> GetQueryParameters() {
         return [
             new QueryParameters() { },
             new QueryParameters() { TCGPlayerData = true },
